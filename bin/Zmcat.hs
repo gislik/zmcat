@@ -13,7 +13,7 @@ main :: IO ()
 main = do 
 	args  <- getArgs
 	case args of
-		["pub", uri, k]		-> pub uri k
+		["pub", uri, k]	-> pub uri k
 		["sub", uri, k] 	-> sub uri $ C.pack k
 		["pub", uri]		-> pub uri ""
 		["sub", uri] 		-> sub uri ""
@@ -21,5 +21,5 @@ main = do
 		["pull", uri] 		-> pull uri
 		["req", uri] 		-> req uri
 		["rep", uri] 		-> rep uri
-		_	  		-> (hPutStrLn stderr usage) >> exitFailure
+		_						-> (hPutStrLn stderr usage) >> exitFailure
 	where usage = "cli <pub|sub|push|pull|rep|req> <uri> [key-for-pub-or-sub='']"
