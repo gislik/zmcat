@@ -3,7 +3,10 @@
 module Main where
 
 import System.Exit (exitFailure)
+import Control.Exception (handleJust)
+import Control.Monad (guard)
 import System.IO
+import System.IO.Error (isEOFError)
 import System.Environment (getArgs)
 import qualified Data.ByteString.Char8 as C
 
@@ -17,7 +20,7 @@ main = do
 		["sub", uri, k] 	-> sub uri $ C.pack k
 		["pub", uri]		-> pub uri ""
 		["sub", uri] 		-> sub uri ""
-		["push", uri] 		-> push uri
+		["push", uri] 		-> handleJust (guard . isEOFError) return $ push uri
 		["pull", uri] 		-> pull uri
 		["req", uri] 		-> req uri
 		["rep", uri] 		-> rep uri
