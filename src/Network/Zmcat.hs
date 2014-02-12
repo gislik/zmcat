@@ -7,7 +7,7 @@ import Control.Monad (forever)
 import Data.Monoid ((<>))
 import Data.ByteString
 import qualified Data.ByteString.Char8 as C
-import System.IO (stdout, hFlush)
+import System.IO (stdout, hFlush, isEOF)
 
 runCtx :: SocketType a1 => a1 -> (Socket a1 -> IO a) -> IO a
 runCtx t blk = withContext $ \ctx -> do
@@ -43,7 +43,10 @@ push uri = runCtx Push $ \skt -> do
         connect skt uri
         forever $ do
             pkt <- getLine 
-            send skt [] pkt
+            eof <- isEOF
+            if eof
+               then send skt [] pkt
+               else send skt [SendMore] pkt
 
 rep :: String -> IO a
 rep uri = runCtx Rep $ \skt -> do
